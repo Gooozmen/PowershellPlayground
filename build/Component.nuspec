@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+    <metadata>
+        <id>dotnet.Toolkit</id>
+        <version>$version$</version>
+        <authors>Juan Guzman</authors>
+        <owners>Juan Guzman</owners>
+        <requireLevelAcceptance>false</requireLevelAcceptance>
+        <despcription>Powershell Library</despcription>
+        <tags></tags>
+        <releaseNotes></releaseNotes>
+    </metadata>
+</package>
+<files>
+    <file src="..\src\*.ps1" target="lib">
+    <file src="setup.ps1" target="lib">
+</files>
