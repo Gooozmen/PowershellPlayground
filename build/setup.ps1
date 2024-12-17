@@ -1,24 +1,24 @@
-function NugetCommandLineInstall{
+function Nuget-Install{
     choco install nuget.commandline -y
 }
 
-function ChocolateyInstall{
+function Chocolatey-Install{
     Set-ExecutionPolicy Bypass -Scope Process -Force
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 }
 
-function InstallDependencies{
+function Install-Dependencies{
     nuget install psake -Source "nuget.org" -OutputDirectory ..\Dependencies
 }
 
-function ImportPsake{
+function Import-Psake-Module{
     Import-Module ( "..\Dependencies\psake*\tools\psake\psake.psm1") -force
     Write-Output "Psake Module Imported"
 
 }
 
-function CleanFolders{
+function Clean-Folders{
     $folderPath = "..\Dependencies\"
 
     # Check recursively
@@ -30,9 +30,9 @@ function CleanFolders{
     }
 }
 
-ChocolateyInstall
-NugetCommandLineInstall
-CleanFolders
-InstallDependencies
-ImportPsake
+Chocolatey-Install
+Nuget-Install
+Clean-Folders
+Install-Dependencies
+Import-Psake-Module
 

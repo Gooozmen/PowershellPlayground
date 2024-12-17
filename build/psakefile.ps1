@@ -4,7 +4,7 @@
 
 $currentDir = get-location
 $ErrorActionPreference = 'Stop'
-$Title = "dotnet.ToolKit"
+$Title = "ToolKit"
 $target = " "
 $icon = "$currentDir\..\res\AppIcon.ico" 
 
