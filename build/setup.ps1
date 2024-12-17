@@ -13,7 +13,7 @@ function Install-Dependencies{
 }
 
 function Import-Psake-Module{
-    Import-Module ( "..\Dependencies\psake*\tools\psake\psake.psm1") -force
+    Import-Module (Resolve-Path "..\Dependencies\psake*\tools\psake\psake.psm1") -force
     Write-Output "Psake Module Imported"
 
 }
