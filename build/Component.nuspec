@@ -5,13 +5,13 @@
         <version>$version$</version>
         <authors>Juan Guzman</authors>
         <owners>Juan Guzman</owners>
-        <requireLevelAcceptance>false</requireLevelAcceptance>
-        <despcription>Powershell Library</despcription>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Powershell Library</description>
         <tags></tags>
         <releaseNotes></releaseNotes>
     </metadata>
+    <files>
+        <file src="..\src\*.ps1" target="lib"/>
+        <file src="setup.ps1" target="lib"/>
+    </files>
 </package>
-<files>
-    <file src="..\src\*.ps1" target="lib">
-    <file src="setup.ps1" target="lib">
-</files>

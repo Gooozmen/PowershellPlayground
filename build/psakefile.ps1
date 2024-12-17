@@ -1,5 +1,6 @@
 .".\version.ps1"
 ."..\src\Functions.ps1"
+."..\src\Notifications.ps1"
 
 $currentDir = get-location
 $ErrorActionPreference = 'Stop'

@@ -1,4 +1,4 @@
-.".\Notifications.ps1"
+".\Notifications.ps1"
 
 function Clean-Solution {
     param (

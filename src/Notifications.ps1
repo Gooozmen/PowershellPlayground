@@ -1,5 +1,6 @@
 function ShowNotification([string]$message, [string]$level, [string]$icon, [string]$title)
 {
+
     # Load required assemblies
     Add-Type -AssemblyName System.Windows.Forms
     Add-Type -AssemblyName System.Drawing

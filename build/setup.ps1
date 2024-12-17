@@ -8,8 +8,31 @@ function ChocolateyInstall{
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 }
 
+function InstallDependencies{
+    nuget install psake -Source "nuget.org" -OutputDirectory ..\Dependencies
+}
+
+function ImportPsake{
+    Import-Module ( "..\Dependencies\psake*\tools\psake\psake.psm1") -force
+    Write-Output "Psake Module Imported"
+
+}
+
+function CleanFolders{
+    $folderPath = "..\Dependencies\"
+
+    # Check recursively
+    if (Get-ChildItem -Path $folderPath -Recurse -ErrorAction SilentlyContinue) {
+        # Remove only subfolders, not files
+        Get-ChildItem -Path $folderPath -Directory | Remove-Item -Recurse -Force
+    } else {
+        Write-Output "The folder is empty."
+    }
+}
+
 ChocolateyInstall
 NugetCommandLineInstall
-# & nuget install psake -Source "https://api.nuget.org/v3/index.json" -Version 4.9.0 -OutputDirectory ..\Dependencies
-nuget install psake -Source "https://api.nuget.org/v3/index.json" -OutputDirectory ..\Dependencies
+CleanFolders
+InstallDependencies
+ImportPsake
 
