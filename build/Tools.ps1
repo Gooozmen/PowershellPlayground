@@ -49,6 +49,3 @@ function Verify-PsakeImport {
 function Invoke-PsakeSession{
     & (Resolve-Path "..\Dependencies\psake*\tools\psake\psake.ps1") .\psakefile.ps1 CreateNugetPackage
 }
-
-Install-Dependencies
-Import-PsakeModule
