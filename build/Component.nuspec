@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
     <metadata>
-        <id>dotnet.Toolkit</id>
+        <id>Toolkit</id>
         <version>$version$</version>
         <authors>Juan Guzman</authors>
         <owners>Juan Guzman</owners>

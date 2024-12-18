@@ -1,6 +1,5 @@
 .".\version.ps1"
 ."..\src\Functions.ps1"
-."..\src\Notifications.ps1"
 
 $currentDir = get-location
 $ErrorActionPreference = 'Stop'
@@ -9,10 +8,9 @@ $target = " "
 $icon = "$currentDir\..\res\AppIcon.ico" 
 
 task CreateNugetPackage{
-    $target = "CreateNugetPackage"
-    & nuget.exe pack Component.nuspec /OutputDirectory ..\Artifacts -Properties "version=$version" -Force
-    if($LASTEXITCODE -eq 1){
-        Write-Verbose "Encountered problems while runnning task: $target"
-        ShowError -message "$target finished with errors." -icon $icon -title $title 
-    }
+    Create-NugetPackage -Output "..\Artifacts" -Version $version
 }
+
+
+dotnet nuget push "..\Artifacts\Toolkit.1.0.0.nupkg" --api-key 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 --source "github"
+dotnet nuget add source --username Gooozmen --password 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 --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Gooozmen/index.json"

@@ -32,32 +32,90 @@ function Build-Solution([string]$SolutionPath,[string]$Configuration = "Release"
 {
     $currentTarget = "Build-Solution"
     Log-Info -Target $currentTarget -Message "Building solution: $SolutionPath with Configuration: $Configuration"
-    Write-Host "Building solution: $SolutionPath with Configuration: $Configuration" -ForegroundColor Cyan
     dotnet build $SolutionPath --configuration $Configuration --no-restore
     if ($LASTEXITCODE -ne 0) {
+        Log-Error -Target $currentTarget
         exit 1
     }
-    Write-Host "Build succeeded!" -ForegroundColor Green
+    else{
+        Log-Success -Target $currentTarget
+    }
 }
 
-function Publish-Solution {
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]$SolutionPath,
-        [string]$OutputPath,
-        [string]$Configuration = "Release"
-    )
-
-    Write-Host "Publishing solution: $SolutionPath to Output Path: $OutputPath" -ForegroundColor Cyan
-    dotnet publish $SolutionPath --configuration $Configuration --output $OutputPath --no-restore
+function Publish-Solution ([string]$SolutionPath,[string]$OutputPath,[string]$Configuration = "Release")
+{
+    $currentTarget = "Publish-Solution"
+    Log-Info -Target $currentTarget -Message "Publishing solution: $SolutionPath to Output Path: $OutputPath"
     if ($LASTEXITCODE -ne 0) {
-        ShowError "Failed to publish the solution: $SolutionPath"
-                  -icon $icon
-                  -title $title
+        Log-Error -Target $currentTarget
         exit 1
     }
-    Write-Host "Publish succeeded! Artifacts available at: $OutputPath" -ForegroundColor Green
+    else{
+        Log-Success -Target $currentTarget
+    }
 }
+
+#Package
+function Create-NugetPackage([string]$Output,[string]$Version){
+    $target = "CreateNugetPackage"
+    $AbsoluteOutput = Resolve-Path $Output
+    & nuget.exe pack Component.nuspec /OutputDirectory $AbsoluteOutput -Properties "version=$Version" -Force
+    if ($LASTEXITCODE -ne 0) {
+        Log-Error -Target $currentTarget
+        exit 1
+    }
+    else{
+        Log-Success -Target $currentTarget
+    }
+}
+
+function Push-NuGetPackage([string]$PackagePath,[string]$RepositoryUrl,[string]$GitHubToken,[string]$ApiKey = "GITHUB")
+{
+    $currentTarget = "Push-NuGetPackage"
+    # Check if the NuGet CLI is installed
+    if (-not (Get-Command "nuget" -ErrorAction SilentlyContinue)) {
+        Log-Error -Target $currentTarget -Message "NuGet CLI not found. Please install it from https://www.nuget.org/downloads and ensure it's in your PATH."
+        return
+    }
+
+    # Validate parameters
+    if (-not (Test-Path $PackagePath)) {
+        Log-Error -Target $currentTarget -Message "Package file not found at path: $PackagePath"
+        return
+    }
+    if ([string]::IsNullOrWhiteSpace($RepositoryUrl) -or [string]::IsNullOrWhiteSpace($GitHubToken)) {
+        Write-Error 
+        Log-Error -Target $currentTarget -Message "Repository URL and GitHub token are required."
+        return
+    }
+
+    # Push the package
+    try {
+        Log-Info -Target $currentTarget -Message "Pushing package to GitHub repository..."
+        & nuget push $PackagePath `
+                    -Source $RepositoryUrl `
+                    -ApiKey $GitHubToken `
+                    -NonInteractive
+
+        if ($LASTEXITCODE -ne 0) {
+            Log-Error -Target $currentTarget
+        exit 1
+        }
+        else{
+            Log-Success -Target $currentTarget
+        }
+    }
+    catch {
+        Log-Error -Target $currentTarget
+
+    }
+
+    dotnet nuget push "..\Artifacts\Toolkit.1.0.0.nupkg" --api-key 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 --source "github"
+dotnet nuget add source --username Gooozmen --password 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 --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Gooozmen/index.json"
+}
+
+
+   
 
 #notification banner
 function Show-Notification([string]$message, [string]$level, [string]$icon, [string]$title)
@@ -92,17 +150,17 @@ function Show-Notification([string]$message, [string]$level, [string]$icon, [str
 
 function Show-Info([string]$message, [string]$icon, [string]$title)
 {
-    ShowNotification -message $message -icon $icon -title $title -level "Info"
+    Show-Notification -message $message -icon $icon -title $title -level "Info"
 }
 
 function Show-Warning([string]$message, [string]$icon, [string]$title)
 {
-    ShowNotification -message $message -icon $icon -title $title -level "Warning"
+    Show-Notification -message $message -icon $icon -title $title -level "Warning"
 }
 
 function Show-Error([string]$message, [string]$icon, [string]$title)
 {
-    ShowNotification -message $message -icon $icon -title $title -level "Error"
+    Show-Notification -message $message -icon $icon -title $title -level "Error"
 }
 
 #notificacion log message
@@ -129,6 +187,8 @@ function Log-Warning([string]$Target,[string]$Message = "")
     $finalMessage = "$Target - $Message - WARNING"
     Write-Host $finalMessage -ForegroundColor Yellow
 }
+
+ 
 
 
 
