@@ -28,4 +28,5 @@ jobs:
         run: .\Build\setup.ps1
 
       - name: Run Create Nuget Package 
+        shell: pwsh
         run: .\Build\CreateNugetPackage.ps1
