@@ -12,7 +12,7 @@ function Install-Dependencies{
     nuget install psake -Source "nuget.org" -OutputDirectory ..\Dependencies
 }
 
-function Import-Psake-Module{
+function Import-PsakeModule{
     Import-Module (Resolve-Path "..\Dependencies\psake*\tools\psake\psake.psm1") -force
     Write-Output "Psake Module Imported"
 }
@@ -30,13 +30,11 @@ function Clean-Folders([string[]]$PathsArray){
     }
 }
 
-
-
-Chocolatey-Install
-Nuget-Install
-Clean-Folders -PathsArray @("..\Dependencies","..\Artifacts")
+# Chocolatey-Install
+# Nuget-Install
+# Clean-Folders -PathsArray @("..\Dependencies","..\Artifacts")
 Install-Dependencies
-Import-Psake-Module
+Import-PsakeModule
 
 # dotnet nuget add source --username OWNER --password YOUR_GITHUB_PAT --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Gooozmen/index.json"
 # dotnet nuget push "build\PROJECT_NAME.1.0.0.nupkg" --api-key YOUR_GITHUB_PAT --source "github"
