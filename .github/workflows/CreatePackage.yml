@@ -25,4 +25,4 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run Create Nuget Package Script
-        run: .\Build\CreateNugetPackage.ps1
+        run: .\Build\setup.ps1
