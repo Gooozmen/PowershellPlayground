@@ -25,6 +25,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run Setup
+        shell: pwsh
         run: .\Build\setup.ps1
 
       - name: Run Create Nuget Package 
