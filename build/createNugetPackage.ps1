@@ -1,1 +1,2 @@
-Invoke-Psake .\psakefile.ps1 CreateNugetPackage
+.".\Tools.ps1"
+Invoke-PsakeSession
