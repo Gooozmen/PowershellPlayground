@@ -9,6 +9,8 @@ $icon = "$currentDir\..\res\AppIcon.ico"
 
 
 task CreateNugetPackage{
+    $current = get-location
+    Write-Host "current location $current"
     Create-NugetPackage -Output "..\Artifacts" -Version $version
 }
 
