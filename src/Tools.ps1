@@ -69,49 +69,26 @@ function Create-NugetPackage([string]$Output,[string]$Version){
     }
 }
 
-function Push-NuGetPackage([string]$PackagePath,[string]$RepositoryUrl,[string]$GitHubToken,[string]$ApiKey = "GITHUB")
+function Push-NuGetPackage([string]$PackagePath)
 {
     $currentTarget = "Push-NuGetPackage"
-    # Check if the NuGet CLI is installed
-    if (-not (Get-Command "nuget" -ErrorAction SilentlyContinue)) {
-        Log-Error -Target $currentTarget -Message "NuGet CLI not found. Please install it from https://www.nuget.org/downloads and ensure it's in your PATH."
-        return
-    }
-
-    # Validate parameters
-    if (-not (Test-Path $PackagePath)) {
-        Log-Error -Target $currentTarget -Message "Package file not found at path: $PackagePath"
-        return
-    }
-    if ([string]::IsNullOrWhiteSpace($RepositoryUrl) -or [string]::IsNullOrWhiteSpace($GitHubToken)) {
-        Write-Error 
-        Log-Error -Target $currentTarget -Message "Repository URL and GitHub token are required."
-        return
-    }
-
+    $GitHubToken = "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"
+    $AbsolutePackagePath = Resolve-Path $PackagePath
+    
     # Push the package
     try {
         Log-Info -Target $currentTarget -Message "Pushing package to GitHub repository..."
-        & nuget push $PackagePath `
-                    -Source $RepositoryUrl `
-                    -ApiKey $GitHubToken `
-                    -NonInteractive
+        & nuget push $PackagePath -Source $RepositoryUrl -ApiKey $GitHubToken
 
         if ($LASTEXITCODE -ne 0) {
             Log-Error -Target $currentTarget
-        exit 1
-        }
-        else{
-            Log-Success -Target $currentTarget
+            exit 1
         }
     }
     catch {
         Log-Error -Target $currentTarget
 
     }
-
-    dotnet nuget push "..\Artifacts\Toolkit.1.0.0.nupkg" --api-key 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 --source "github"
-dotnet nuget add source --username Gooozmen --password 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 --store-password-in-clear-text --name github "https://nuget.pkg.github.com/Gooozmen/index.json"
 }
 
 

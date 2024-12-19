@@ -50,5 +50,24 @@ function Invoke-PsakeSession{
     & (Resolve-Path "..\Dependencies\psake*\tools\psake\psake.ps1") .\psakefile.ps1 CreateNugetPackage
 }
 
+function Add-PackageSource{
+    nuget sources Add -Name "github" -Source "https://nuget.pkg.github.com/Gooozmen/index.json"
+}
+
+function Verify-PackageSource{
+    $sources = nuget sources list
+    foreach($_ in $sources){
+        Write-Output "SRC $_"
+    }
+    if($sources -like "*https://nuget.pkg.github.com/Gooozmen/index.json*"){
+            Write-Host "Github source was already defined"
+    }
+    else{
+        Add-PackageSource
+        Write-Host "Github source was added"
+    }
+}
+
 Install-Dependencies
+Verify-PackageSource
 Import-PsakeModule
