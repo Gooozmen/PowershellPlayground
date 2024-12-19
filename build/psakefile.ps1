@@ -7,8 +7,9 @@ $target = "Psakefile"
 $icon = "$currentDir\..\res\AppIcon.ico" 
 $version = "1.0.0"
 
-Log-Info -Target $target -Message "Package Version: $version"
+
 task CreateNugetPackage{
+    Log-Info -Target $target -Message "Package Version: $version"
     Create-NugetPackage -Output "..\Artifacts" -Version $version
 }
 
