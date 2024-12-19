@@ -72,7 +72,7 @@ function Verify-PackageSource{
     }
 }
 
-Clean-Folders -PathsArray @("..\Dependencies")
+# Clean-Folders -PathsArray @("..\Dependencies")
 Install-Dependencies
 Verify-PackageSource
 Import-PsakeModule
