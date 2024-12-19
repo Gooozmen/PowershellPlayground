@@ -1,1 +1,3 @@
-& (Resolve-Path "..\Dependencies\psake*\tools\psake\psake.ps1") .\psakefile.ps1 CreateNugetPackage
+
+$psakeFilePath = Resolve-Path "..\..\..\..\Build\psakefile.ps1"
+& (Resolve-Path "..\Dependencies\psake*\tools\psake\psake.ps1") $psakeFilePath CreateNugetPackage
