@@ -72,13 +72,12 @@ function Create-NugetPackage([string]$Output,[string]$Version){
 function Push-NuGetPackage([string]$PackagePath)
 {
     $currentTarget = "Push-NuGetPackage"
-    $GitHubToken = "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"
     $AbsolutePackagePath = Resolve-Path $PackagePath
     
     # Push the package
     try {
         Log-Info -Target $currentTarget -Message "Pushing package to GitHub repository..."
-        & nuget push $PackagePath -Source $RepositoryUrl -ApiKey $GitHubToken
+        & nuget push $PackagePath -Source "github"
 
         if ($LASTEXITCODE -ne 0) {
             Log-Error -Target $currentTarget
