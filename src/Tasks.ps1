@@ -1,4 +1,4 @@
-Include ".\Functions.ps1"
+Include ".\Tools.ps1"
 
 task Build -depends NugetRestore{
     Build-solution -SolutionPath $SolutionPath -Configuration $configuration
