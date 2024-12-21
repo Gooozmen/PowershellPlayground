@@ -16,7 +16,11 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: windows-2022
+    runs-on: Windows-latest
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: .\Build
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -26,8 +30,8 @@ jobs:
       # Runs a single command using the runners shell
       - name: Setup
         shell: pwsh
-        run: .\Build\setup.ps1
+        run: .\setup.ps1
 
       - name: Create and Push Nuget Package 
         shell: pwsh
-        run: .\Build\CreateAndPushPackage.ps1 -BuildVersion ${{ github.run_number }}
+        run: .\CreateAndPushPackage.ps1 -BuildVersion ${{ github.run_number }}
