@@ -1,3 +1,17 @@
+Include ".\Functions.ps1"
+
+task Build -depends NugetRestore{
+    Build-solution -SolutionPath $SolutionPath -Configuration $configuration
+}
+
+task Clean{
+    Clean-solution -SolutionPath $SolutionPath
+}
+
+task NugetRestore{
+    Restore-solution -SolutionPath $SolutionPath
+}
+
 #solution
 function Clean-Solution([string]$SolutionPath)
 {
@@ -89,10 +103,7 @@ function Push-NuGetPackage([string]$PackagePath)
         Log-Error -Target $currentTarget
 
     }
-}
-
-
-   
+}  
 
 #notification banner
 function Show-Notification([string]$message, [string]$level, [string]$icon, [string]$title)
@@ -164,9 +175,3 @@ function Log-Warning([string]$Target,[string]$Message = "")
     $finalMessage = "$Target - $Message - WARNING"
     Write-Host $finalMessage -ForegroundColor Yellow
 }
-
- 
-
-
-
-
