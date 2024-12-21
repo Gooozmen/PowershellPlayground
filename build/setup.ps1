@@ -16,11 +16,17 @@ function Clean-Folders([string[]]$PathsArray){
     foreach ($_ in $PathsArray) {
         $AbsolutePath = Resolve-Path "$_"
         if(Test-Path $AbsolutePath){
-            Write-Host "Removing items in $AbsolutePath"
-            Remove-Item -Recurse "$_\**"
+            $ItemsQuantity = (Get-ChildItem -Path $ItemsQuantity -Directory).Count
+            if($ItemsQuantity -gt 0){
+                Write-Host "Removing items in $AbsolutePath"
+                Remove-Item -Recurse "$_\**"
+            }
+            else{
+                Write-Host "No existing directories in $AbsolutePath"
+            }
         }
         else{
-            Write-Host "$AbsolutePath Contains doesnt contain items"
+            Write-Host "$_ doesnt exist"
         }
     }
 }
@@ -50,24 +56,23 @@ function Invoke-PsakeSession{
     & (Resolve-Path "..\Dependencies\psake*\tools\psake\psake.ps1") .\psakefile.ps1 CreateNugetPackage
 }
 
-function Add-PackageSource{
-    nuget sources Add -Name "github" -Source "https://nuget.pkg.github.com/Gooozmen/index.json"
+function Add-PackageSource([string] $Command){
+    nuget sources $Command -Name "github" -Source "https://nuget.pkg.github.com/Gooozmen/index.json" -username Gooozmen -password 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
 }
 
 function Verify-PackageSource{
     $sources = nuget sources list
-    foreach($_ in $sources){
-        Write-Output "SRC $_"
-    }
     if($sources -like "*https://nuget.pkg.github.com/Gooozmen/index.json*"){
-            Write-Host "Github source was already defined"
+        Add-PackageSource -Command "update"
+        Write-Host "Github source was updated"
     }
     else{
-        Add-PackageSource
+        Add-PackageSource -Command "add"
         Write-Host "Github source was added"
     }
 }
 
+# Clean-Folders -PathsArray @("..\Dependencies")
 Install-Dependencies
 Verify-PackageSource
 Import-PsakeModule
