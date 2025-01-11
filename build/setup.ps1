@@ -59,8 +59,8 @@ function Invoke-PsakeSession{
 function Add-PackageSource([string] $Command){
     $Username = $env:NUGET_USERNAME
     $Password = $env:NUGET_PASSWORD
-    Write_Ouput "Username $Username"
-    Write_Ouput "PASS $Password"
+    Write-Output "Username $Username"
+    Write-Output "PASS $Password"
 
 
     if (-not $Username -or -not $Password) {
