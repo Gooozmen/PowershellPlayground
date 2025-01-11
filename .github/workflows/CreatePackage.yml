@@ -31,6 +31,9 @@ jobs:
       - name: Setup
         shell: pwsh
         run: .\setup.ps1
+        env:
+          NUGET_USERNAME: ${{ secrets.NUGET_USERNAME }}
+          NUGET_PASSWORD: ${{ secrets.NUGET_PASSWORD }}
 
       - name: Create and Push Nuget Package 
         shell: pwsh
