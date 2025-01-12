@@ -10,6 +10,15 @@ task NugetRestore{
     Restore-solution -SolutionPath $SolutionPath
 }
 
+task S3-PostFile{
+    S3-FileUpload -BucketName $bucketName 
+                   -FilePath $filePath
+                   -S3Key $S3Key
+                   -Region $Region
+                   -AccessKey $accessKey
+                   -SecretKey $secretKey
+}
+
 #solution
 function Clean-Solution([string]$SolutionPath)
 {
@@ -54,7 +63,7 @@ function Build-Solution([string]$SolutionPath,[string]$Configuration = "Release"
     }
 }
 
-function Publish-Solution ([string]$SolutionPath,[string]$OutputPath,[string]$Configuration = "Release")
+function Upload-Solution([string]$SolutionPath,[string]$OutputPath,[string]$Configuration = "Release")
 {
     $currentTarget = "Publish-Solution"
     Log-Info -Target $currentTarget -Message "Publishing solution: $SolutionPath to Output Path: $OutputPath"
@@ -101,6 +110,34 @@ function Push-NuGetPackage([string]$PackagePath)
 
     }
 }  
+
+#AWS
+function S3-FileUpload([string]$BucketName,[string]$FilePath,[string]$S3Key,[string]$Region,[string]$AccessKey,[string]$SecretKey)
+{
+    $currentTarget = "Aws-S3 Upload"
+    try {
+        Import-Module AWS.Tools.S3
+
+        Initialize-AWSDefaultConfiguration -AccessKey $AccessKey -SecretKey $SecretKey -Region $Region
+
+        # Check if the file exists
+        if (-not (Test-Path -Path $FilePath)) {
+            Log-Error -Target $currentTarget 
+                      -Message "File '$FilePath' does not exist. Please provide a valid file path."
+            exit 1
+        }
+
+        Log-Info -Target $currentTarget 
+                 -Message "Uploading '$FilePath' to bucket '$BucketName' with key '$S3Key'..."
+        Write-S3Object -BucketName $BucketName -File $FilePath -Key $S3Key
+
+        Log-Success -Target $currentTarget
+    }
+    catch {
+       Log-Error -Target $currentTarget -Message "An error occurred during the upload: $_"
+    }
+}
+
 
 #notification banner
 function Show-Notification([string]$message, [string]$level, [string]$icon, [string]$title)
@@ -172,3 +209,10 @@ function Log-Warning([string]$Target,[string]$Message = "")
     $finalMessage = "$Target - $Message - WARNING"
     Write-Host $finalMessage -ForegroundColor Yellow
 }
+
+# S3-FileUpload -BucketName "s3b-playground"
+#               -FilePath "..\.md"
+#               -S3Key "test"
+#               -Region "us-east-1"
+#               -AccessKey "KIAYM7PN7JMMHUKSHGO"
+#               -SecretKey "epT3apXxTsOR0FwTy4qAnOtCGyFrNR69IWn4vtV0"

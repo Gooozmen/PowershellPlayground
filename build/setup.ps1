@@ -8,8 +8,17 @@ function Chocolatey-Install{
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 }
 
-function Install-Dependencies{
+function Install-PsakeFramework{
     nuget install psake -Source "nuget.org" -OutputDirectory ..\Dependencies
+}
+
+function Install-AwsTools{
+    Install-Module -Name AWS.Tools.Installer -Force -Scope CurrentUser -AllowClobber
+    Install-AwsS3
+}
+
+function Install-AwsS3{
+    Install-Module -Name AWS.Tools.Installer -Force -Scope CurrentUser
 }
 
 function Clean-Folders([string[]]$PathsArray){
@@ -84,6 +93,7 @@ function Verify-PackageSource{
 }
 
 # Clean-Folders -PathsArray @("..\Dependencies")
-Install-Dependencies
+Install-PsakeFramework
+Install-AwsTools
 Verify-PackageSource
 Import-PsakeModule
