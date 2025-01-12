@@ -11,12 +11,7 @@ task NugetRestore{
 }
 
 task S3-PostFile{
-    S3-FileUpload -BucketName $bucketName 
-                   -FilePath $filePath
-                   -S3Key $S3Key
-                   -Region $Region
-                   -AccessKey $accessKey
-                   -SecretKey $secretKey
+    S3-FileUpload -BucketName $bucketName  -FilePath $filePath -S3Key $S3Key -Region$Region -AccessKey $accessKey -SecretKey $secretKey
 }
 
 #solution
@@ -120,21 +115,18 @@ function S3-FileUpload([string]$BucketName,[string]$FilePath,[string]$S3Key,[str
 
         Initialize-AWSDefaultConfiguration -AccessKey $AccessKey -SecretKey $SecretKey -Region $Region
 
-        # Check if the file exists
         if (-not (Test-Path -Path $FilePath)) {
-            Log-Error -Target $currentTarget 
-                      -Message "File '$FilePath' does not exist. Please provide a valid file path."
+            Write-Error "$FilePath does not exists"
             exit 1
         }
 
-        Log-Info -Target $currentTarget 
-                 -Message "Uploading '$FilePath' to bucket '$BucketName' with key '$S3Key'..."
+        Write-Host "Starting to upload file to $BucketName"
         Write-S3Object -BucketName $BucketName -File $FilePath -Key $S3Key
+        Write-Host "Upload file to $BucketName completed"
 
-        Log-Success -Target $currentTarget
     }
     catch {
-       Log-Error -Target $currentTarget -Message "An error occurred during the upload: $_"
+        Write-Error $_
     }
 }
 
@@ -209,10 +201,3 @@ function Log-Warning([string]$Target,[string]$Message = "")
     $finalMessage = "$Target - $Message - WARNING"
     Write-Host $finalMessage -ForegroundColor Yellow
 }
-
-# S3-FileUpload -BucketName "s3b-playground"
-#               -FilePath "..\.md"
-#               -S3Key "test"
-#               -Region "us-east-1"
-#               -AccessKey "KIAYM7PN7JMMHUKSHGO"
-#               -SecretKey "epT3apXxTsOR0FwTy4qAnOtCGyFrNR69IWn4vtV0"
