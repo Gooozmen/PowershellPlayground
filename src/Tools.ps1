@@ -83,7 +83,7 @@ function Zip-Folder([string]$SourceFolder,[string]$OutputFolder){
     Write-Host "Source: $SourceFolder"
     Write-Host "Destination: $OutputFolder"
 
-    & "$7zip" a -tzip $OutputFolder $SourceFolder
+    & "$7zip" a -tzip $OutputFolder "$SourceFolder\*"
 
     if (Test-Path "$OutputFolder\*.zip") {
         Log-Info -Target $currentTarget -Message "ZIP file created successfully: $OutputFolder"
