@@ -80,10 +80,10 @@ function Upload-Solution([string]$SolutionPath,[string]$OutputPath,[string]$Conf
 function Zip-Folder([string]$SourceFolder,[string]$OutputFolder){
     $7zip = "7z.exe"
     $currentTarget = "Zip Folder"
-    & "$7zip" a -tzip "$outputZip" "$sourceFolder\*"
+    & "$7zip" a -tzip "$OutputFolder" "$sourceFolder\*"
 
-    if (Test-Path $outputZip) {
-        Log-Info -Target $currentTarget -Message "ZIP file created successfully: $outputZip"
+    if (Test-Path $OutputFolder) {
+        Log-Info -Target $currentTarget -Message "ZIP file created successfully: $OutputFolder"
     } 
     else {
         Log-Error -Target $currentTarget 
