@@ -80,9 +80,12 @@ function Upload-Solution([string]$SolutionPath,[string]$OutputPath,[string]$Conf
 function Zip-Folder([string]$SourceFolder,[string]$ArtifactsFolder){
     $7zip = "7z.exe"
     $currentTarget = "Zip Folder"
-    & "$7zip" a -tzip "$ArtifactsFolder" "$SourceFolder\*"
+    Write-Host "Source: $SourceFolder"
+    Write-Host "Destionation: $ArtifactsFolder"
 
-    if (Test-Path $ArtifactsFolder) {
+    & "$7zip" a -tzip $ArtifactsFolder $SourceFolder
+
+    if (Test-Path "$ArtifactsFolder\*.zip") {
         Log-Info -Target $currentTarget -Message "ZIP file created successfully: $ArtifactsFolder"
     } 
     else {
@@ -149,6 +152,7 @@ function S3-FileUpload([string]$BucketName,[string]$FilePath,[string]$S3Key,[str
         Write-Error $_
     }
 }
+
 
 
 #notification banner
