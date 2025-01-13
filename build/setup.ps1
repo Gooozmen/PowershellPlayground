@@ -37,7 +37,6 @@ function Install-AwsS3{
     Write-Host "Installing Aws S3"
     Install-AWSToolsModule -Name AWS.Tools.S3 -Force -Scope CurrentUser -Verbose
 }
-
 function Remove-FoldersContent([string[]]$PathsArray){
     foreach ($_ in $PathsArray) {
         $AbsolutePath = Resolve-Path "$_"
@@ -56,14 +55,12 @@ function Remove-FoldersContent([string[]]$PathsArray){
         }
     }
 }
-
 function Import-PsakeModule {
     # Resolve the psake module path and import it
     $modulePath = Resolve-Path "..\Dependencies\psake*\tools\psake\psake.psm1"
     Import-Module $modulePath -Force -ErrorAction Stop
     Test-PsakeImport 
 }
-
 function Test-PsakeImport {
     # Check if psake is imported into the session
     if (Get-Module -Name psake) {
@@ -77,7 +74,6 @@ function Test-PsakeImport {
         Write-Host "The 'psake' module is NOT available on the system." -ForegroundColor Red
     }
 }
-
 function Invoke-PsakeSession{
     & (Resolve-Path "..\Dependencies\psake*\tools\psake\psake.ps1") .\psakefile.ps1 CreateNugetPackage
 }
