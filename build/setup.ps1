@@ -28,6 +28,7 @@ function Install-AwsTools{
     if(Ensure-ModuleInstalled -ModuleName "AWS.Tools.Installer" -eq $false){
         Write-Host "Installing Aws Tools"
         Install-Module -Name AWS.Tools.Installer -Force -Scope CurrentUser -AllowClobber -Verbose
+        Import-Module AWS.Tools.Installer
     }else{
         Write-Host "Aws Tools is already Installed"
     }
@@ -41,6 +42,7 @@ function Install-AwsTools{
 function Install-AwsS3{
     Write-Host "Installing Aws S3"
     Install-AWSToolsModule -Name AWS.Tools.S3 -Force -Scope CurrentUser -Verbose
+    Import-Module AWS.Tools.S3
 }
 function Remove-FoldersContent([string[]]$PathsArray){
     foreach ($_ in $PathsArray) {
