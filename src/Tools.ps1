@@ -78,7 +78,7 @@ function Upload-Solution([string]$SolutionPath,[string]$OutputPath,[string]$Conf
 }
 
 function Zip-Folder([string]$SourceFolder,[string]$OutputFolder){
-    $7zip = "7zip.exe"
+    $7zip = "7z.exe"
     $currentTarget = "Zip Folder"
     & "$7zip" a -tzip "$outputZip" "$sourceFolder\*"
 
