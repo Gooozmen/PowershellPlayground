@@ -16,7 +16,7 @@ task S3-PostFile{
 
 task Publish-Solution{
     Upload-Solution -SolutionPath $SolutionPath -OutputPath $OutputPath -Configuration $Configuration
-    Zip-Folder -SourceFolder $OutputPath -OutputFolder $ArtifactsFolder
+    Zip-Folder -SourceFolder $SourceFolder -OutputFolder $ArtifactsFolder
 }
 
 #solution
@@ -77,13 +77,13 @@ function Upload-Solution([string]$SolutionPath,[string]$OutputPath,[string]$Conf
     }
 }
 
-function Zip-Folder([string]$SourceFolder,[string]$OutputFolder){
+function Zip-Folder([string]$SourceFolder,[string]$ArtifactsFolder){
     $7zip = "7z.exe"
     $currentTarget = "Zip Folder"
-    & "$7zip" a -tzip "$OutputFolder" "$sourceFolder\*"
+    & "$7zip" a -tzip "$ArtifactsFolder" "$SourceFolder\*"
 
-    if (Test-Path $OutputFolder) {
-        Log-Info -Target $currentTarget -Message "ZIP file created successfully: $OutputFolder"
+    if (Test-Path $ArtifactsFolder) {
+        Log-Info -Target $currentTarget -Message "ZIP file created successfully: $ArtifactsFolder"
     } 
     else {
         Log-Error -Target $currentTarget 
