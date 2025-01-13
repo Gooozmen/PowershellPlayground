@@ -167,7 +167,7 @@ function Delete-S3File([string]$BucketName,[string]$FileKey,[string]$Region,[str
         } else {
             Initialize-AWSDefaultConfiguration -Region $Region
         }
-        Remove-S3Object -BucketName $BucketName -Key $FileKey
+        Remove-S3Object -BucketName $BucketName -Key $FileKey -Force
         Log-Info -Target $currentTarget -Message "File '$FileKey' successfully deleted from bucket '$BucketName'."
     }
     catch {
