@@ -16,7 +16,7 @@ task S3-PostFile{
 
 task Publish-Solution{
     Upload-Solution -SolutionPath $SolutionPath -OutputPath $OutputPath -Configuration $Configuration
-    Zip-Folder -SourceFolder $SourceFolder -OutputFolder $ArtifactsFolder
+    Zip-Folder -SourceFolder $SourceFolder -OutputFolder $DestinationFolder
 }
 
 #solution
