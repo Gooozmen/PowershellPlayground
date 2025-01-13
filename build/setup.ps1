@@ -28,10 +28,15 @@ function Install-AwsTools{
     if(Ensure-ModuleInstalled -ModuleName "AWS.Tools.Installer" -eq $false){
         Write-Host "Installing Aws Tools"
         Install-Module -Name AWS.Tools.Installer -Force -Scope CurrentUser -AllowClobber -Verbose
+    }else{
+        Write-Host "Aws Tools is already Installed"
     }
     if(Ensure-ModuleInstalled -ModuleName "AWS.Tools.S3" -eq $false){
         Install-AwsS3
+    }else{
+        Write-Host "Aws S3 is already Installed"
     }
+
 }
 function Install-AwsS3{
     Write-Host "Installing Aws S3"
