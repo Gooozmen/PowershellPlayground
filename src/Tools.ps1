@@ -11,7 +11,11 @@ task NugetRestore{
 }
 
 task S3-PostFile{
-    S3-FileUpload -BucketName $bucketName  -FilePath $filePath -S3Key $S3Key -Region$Region -AccessKey $accessKey -SecretKey $secretKey
+    S3-FileUpload -BucketName $BucketName  -FilePath $ProjectArtifact -S3Key $S3Key -Region $Region -AccessKey $AccessKey -SecretKey $SecretKey
+}
+
+task Publish-Solution{
+    Upload-Solution -SolutionPath $SolutionPath -OutputPath $OutputPath -Configuration $Configuration
 }
 
 #solution
@@ -61,6 +65,7 @@ function Build-Solution([string]$SolutionPath,[string]$Configuration = "Release"
 function Upload-Solution([string]$SolutionPath,[string]$OutputPath,[string]$Configuration = "Release")
 {
     $currentTarget = "Publish-Solution"
+    dotnet publish $SolutionPath -c $Configuration -o $OutputPath
     Log-Info -Target $currentTarget -Message "Publishing solution: $SolutionPath to Output Path: $OutputPath"
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
