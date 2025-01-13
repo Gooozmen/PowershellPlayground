@@ -77,7 +77,6 @@ function Test-PsakeImport {
 function Invoke-PsakeSession{
     & (Resolve-Path "..\Dependencies\psake*\tools\psake\psake.ps1") .\psakefile.ps1 CreateNugetPackage
 }
-
 function Add-PackageSource([string] $Command){
     $Username = $env:NUGET_USERNAME
     $Password = $env:NUGET_PASSWORD
@@ -92,7 +91,6 @@ function Add-PackageSource([string] $Command){
 
     nuget sources $Command -Name "github" -Source "https://nuget.pkg.github.com/Gooozmen/index.json" -username $Username -password $Password
 }
-
 function Set-PackageSource{
     $sources = nuget sources list
     if($sources -like "*https://nuget.pkg.github.com/Gooozmen/index.json*"){
@@ -104,8 +102,13 @@ function Set-PackageSource{
         Write-Host "Github source was added"
     }
 }
+function Install-7Zip{
+    choco install 7zip -y
+}
 
 # Clean-Folders -PathsArray @("..\Dependencies")
+Install-ChocolateyCli
+Install-7Zip
 Install-PsakeFramework
 Install-AwsTools
 Set-PackageSource
