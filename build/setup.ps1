@@ -1,21 +1,29 @@
 function Install-NugetCli{
     choco install nuget.commandline -y
 }
-
 function Install-ChocolateyCli{
     Set-ExecutionPolicy Bypass -Scope Process -Force
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 }
-
 function Install-PsakeFramework{
     nuget install psake -Source "nuget.org" -OutputDirectory ..\Dependencies
 }
-
 function Install-PackageManagment{
     Install-Module -Name PackageManagement -Force -Scope CurrentUser
     Import-Module PackageManagement -Force
 }
+function Ensure-ModuleInstalled ([string]$ModuleName){
+    # Check if the module is already installed
+    $moduleInstalled = Get-Module -Name $ModuleName -ListAvailable
+    if ($moduleInstalled) {return $true} 
+    else {return $false}
+}
+function Test-PathExistence ([string]$Path){
+    if (Test-Path -Path $Path) { return $true }
+    return $false
+}
+#Aws
 function Install-AwsTools{
     if(Ensure-ModuleInstalled -ModuleName "AWS.Tools.Installer" -eq $false){
         Write-Host "Installing Aws Tools"
@@ -25,21 +33,6 @@ function Install-AwsTools{
         Install-AwsS3
     }
 }
-
-# Function to check and install PowerShell module
-function Ensure-ModuleInstalled ([string]$ModuleName)
-{
-    # Check if the module is already installed
-    $moduleInstalled = Get-Module -Name $ModuleName -ListAvailable
-    if ($moduleInstalled) {return $true} 
-    else {return $false}
-}
-
-function Test-PathExistence ([string]$Path){
-    if (Test-Path -Path $Path) { return $true }
-    return $false
-}
-
 function Install-AwsS3{
     Write-Host "Installing Aws S3"
     Install-AWSToolsModule -Name AWS.Tools.S3 -Force -Scope CurrentUser -Verbose
