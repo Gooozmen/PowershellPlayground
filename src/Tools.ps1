@@ -14,6 +14,10 @@ task S3-PostFile{
     S3-FileUpload -BucketName $BucketName  -FilePath $ProjectArtifact -S3Key $S3Key -Region $Region -AccessKey $AccessKey -SecretKey $SecretKey
 }
 
+task S3-DeleteFile{
+    Delete-S3File -BucketName $BucketName -FileKey $FileKey -Region $Region -ProfileName $ProfileName
+}
+
 task Publish-Solution{
     Upload-Solution -SolutionPath $SolutionPath -OutputPath $OutputPath -Configuration $Configuration
     Zip-Folder -SourceFolder $SourceFolder -OutputFolder $DestinationFolder
@@ -77,6 +81,7 @@ function Upload-Solution([string]$SolutionPath,[string]$OutputPath,[string]$Conf
     }
 }
 
+#zip
 function Zip-Folder([string]$SourceFolder,[string]$OutputFolder){
     $7zip = "7z.exe"
     $currentTarget = "Zip Folder"
@@ -92,7 +97,6 @@ function Zip-Folder([string]$SourceFolder,[string]$OutputFolder){
         Log-Error -Target $currentTarget 
     }
 }
-
 
 #Package
 function Create-NugetPackage([string]$Output,[string]$Version){
@@ -153,6 +157,23 @@ function S3-FileUpload([string]$BucketName,[string]$FilePath,[string]$S3Key,[str
     }
 }
 
+function Delete-S3File([string]$BucketName,[string]$FileKey,[string]$Region,[string]$ProfileName = $null)
+{
+    $currentTarget = "Delete-S3File"
+    try {
+        # Initialize AWS credentials and region
+        if ($ProfileName) {
+            Initialize-AWSDefaultConfiguration -Region $Region -ProfileName $ProfileName
+        } else {
+            Initialize-AWSDefaultConfiguration -Region $Region
+        }
+        Remove-S3Object -BucketName $BucketName -Key $FileKey
+        Log-Info -Target $currentTarget -Message "File '$FileKey' successfully deleted from bucket '$BucketName'."
+    }
+    catch {
+        Log-Error -Target $currentTarget -Message "An error occurred while deleting the file: $_"
+    }
+}
 
 
 #notification banner
