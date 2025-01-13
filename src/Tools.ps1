@@ -10,7 +10,7 @@ task NugetRestore{
     Restore-solution -SolutionPath $SolutionPath
 }
 
-task S3-PostFile{
+task S3-PostFile -depends S3-DeleteFile{
     S3-FileUpload -BucketName $BucketName  -FilePath $ProjectArtifact -S3Key $S3Key -Region $Region -AccessKey $AccessKey -SecretKey $SecretKey
 }
 
