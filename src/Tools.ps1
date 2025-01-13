@@ -77,16 +77,16 @@ function Upload-Solution([string]$SolutionPath,[string]$OutputPath,[string]$Conf
     }
 }
 
-function Zip-Folder([string]$SourceFolder,[string]$ArtifactsFolder){
+function Zip-Folder([string]$SourceFolder,[string]$OutputFolder){
     $7zip = "7z.exe"
     $currentTarget = "Zip Folder"
     Write-Host "Source: $SourceFolder"
-    Write-Host "Destionation: $ArtifactsFolder"
+    Write-Host "Destination: $OutputFolder"
 
-    & "$7zip" a -tzip $ArtifactsFolder $SourceFolder
+    & "$7zip" a -tzip $OutputFolder $SourceFolder
 
-    if (Test-Path "$ArtifactsFolder\*.zip") {
-        Log-Info -Target $currentTarget -Message "ZIP file created successfully: $ArtifactsFolder"
+    if (Test-Path "$OutputFolder\*.zip") {
+        Log-Info -Target $currentTarget -Message "ZIP file created successfully: $OutputFolder"
     } 
     else {
         Log-Error -Target $currentTarget 
