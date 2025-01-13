@@ -1,8 +1,8 @@
-function Nuget-Install{
+function Install-NugetCli{
     choco install nuget.commandline -y
 }
 
-function Chocolatey-Install{
+function Install-ChocolateyCli{
     Set-ExecutionPolicy Bypass -Scope Process -Force
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; 
     Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
@@ -12,16 +12,40 @@ function Install-PsakeFramework{
     nuget install psake -Source "nuget.org" -OutputDirectory ..\Dependencies
 }
 
+function Install-PackageManagment{
+    Install-Module -Name PackageManagement -Force -Scope CurrentUser
+    Import-Module PackageManagement -Force
+}
 function Install-AwsTools{
-    Install-Module -Name AWS.Tools.Installer -Force -Scope CurrentUser -AllowClobber
-    Install-AwsS3
+    if(Ensure-ModuleInstalled -ModuleName "AWS.Tools.Installer" -eq $false){
+        Write-Host "Installing Aws Tools"
+        Install-Module -Name AWS.Tools.Installer -Force -Scope CurrentUser -AllowClobber -Verbose
+    }
+    if(Ensure-ModuleInstalled -ModuleName "AWS.Tools.S3" -eq $false){
+        Install-AwsS3
+    }
+}
+
+# Function to check and install PowerShell module
+function Ensure-ModuleInstalled ([string]$ModuleName)
+{
+    # Check if the module is already installed
+    $moduleInstalled = Get-Module -Name $ModuleName -ListAvailable
+    if ($moduleInstalled) {return $true} 
+    else {return $false}
+}
+
+function Test-PathExistence ([string]$Path){
+    if (Test-Path -Path $Path) { return $true }
+    return $false
 }
 
 function Install-AwsS3{
-    Install-Module -Name AWS.Tools.Installer -Force -Scope CurrentUser
+    Write-Host "Installing Aws S3"
+    Install-AWSToolsModule -Name AWS.Tools.S3 -Force -Scope CurrentUser -Verbose
 }
 
-function Clean-Folders([string[]]$PathsArray){
+function Remove-FoldersContent([string[]]$PathsArray){
     foreach ($_ in $PathsArray) {
         $AbsolutePath = Resolve-Path "$_"
         if(Test-Path $AbsolutePath){
@@ -44,10 +68,10 @@ function Import-PsakeModule {
     # Resolve the psake module path and import it
     $modulePath = Resolve-Path "..\Dependencies\psake*\tools\psake\psake.psm1"
     Import-Module $modulePath -Force -ErrorAction Stop
-    Verify-PsakeImport
+    Test-PsakeImport 
 }
 
-function Verify-PsakeImport {
+function Test-PsakeImport {
     # Check if psake is imported into the session
     if (Get-Module -Name psake) {
         Write-Host "The 'psake' module is currently imported in the session." -ForegroundColor Green
@@ -80,7 +104,7 @@ function Add-PackageSource([string] $Command){
     nuget sources $Command -Name "github" -Source "https://nuget.pkg.github.com/Gooozmen/index.json" -username $Username -password $Password
 }
 
-function Verify-PackageSource{
+function Set-PackageSource{
     $sources = nuget sources list
     if($sources -like "*https://nuget.pkg.github.com/Gooozmen/index.json*"){
         Add-PackageSource -Command "update"
@@ -95,5 +119,5 @@ function Verify-PackageSource{
 # Clean-Folders -PathsArray @("..\Dependencies")
 Install-PsakeFramework
 Install-AwsTools
-Verify-PackageSource
+Set-PackageSource
 Import-PsakeModule
