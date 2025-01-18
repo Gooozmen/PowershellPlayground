@@ -119,9 +119,8 @@ function Invoke-DotnetTests([string]$TestDllPath,
     $currentTarget = "Invoke DotnetTests"
     $OutputDirectory =  Resolve-Path "..\Artifacts"
     try {
-        # $resultFile = Join-Path -Path $OutputDirectory -ChildPath "TestResults.xml"
         Log-Info -Target $currentTarget -Message "Running xUnit tests for $TestDllPath..."
-        & $BaseCommand $TestDllPath --logger:trx --results-directory $ResultsDirectory
+        & $BaseCommand $TestDllPath --logger "trx;LogFileName=TestResults.trx" --results-directory $ResultsDirectory
 
         if ($LASTEXITCODE -ne 0) {
             Log-Error -Target $currentTarget -Message "Tests completed successfully. Results saved to $ResultsDirectory"

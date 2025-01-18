@@ -25,3 +25,7 @@ task Publish-Solution{
     Upload-Solution -SolutionPath $SolutionPath -OutputPath $OutputPath -Configuration $Configuration
     Zip-Folder -SourceFolder $SourceFolder -OutputFolder $DestinationFolder
 }
+
+task Execute-DotnetTests -depends Build{
+    Invoke-DotnetTests -TestDllPath $TestDllPath -ResultsDirectory $TestsLogOutput
+}
