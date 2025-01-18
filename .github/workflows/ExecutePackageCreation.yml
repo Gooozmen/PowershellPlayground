@@ -1,5 +1,4 @@
 # This is a basic workflow to help you get started with Actions
-
 name: Create .nupkg 
 
 # Controls when the workflow will run
@@ -7,7 +6,6 @@ on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -22,19 +20,24 @@ jobs:
         shell: pwsh
         working-directory: .\Build
 
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
+      # Setup environment
       - name: Setup
-        shell: pwsh
         run: .\setup.ps1
         env:
           NUGET_USERNAME: ${{ secrets.NUGET_USERNAME }}
           NUGET_PASSWORD: ${{ secrets.NUGET_PASSWORD }}
 
+      # Run Unit Tests
+      - name: Run Unit Tests
+        run: .\RunTests.ps1
+        continue-on-error: false  # Fail the workflow if tests fail
+
       - name: Create and Push Nuget Package 
-        shell: pwsh
         run: .\CreateAndPushPackage.ps1 -BuildVersion ${{ github.run_number }}

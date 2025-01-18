@@ -12,6 +12,5 @@
     </metadata>
     <files>
         <file src="..\src\*.ps1" target="lib"/>
-        <file src="setup.ps1" target="lib"/>
     </files>
 </package>

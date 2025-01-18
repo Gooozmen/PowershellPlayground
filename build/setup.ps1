@@ -83,9 +83,6 @@ function Test-PsakeImport {
         Write-Host "The 'psake' module is NOT available on the system." -ForegroundColor Red
     }
 }
-function Invoke-PsakeSession{
-    & (Resolve-Path "..\Dependencies\psake*\tools\psake\psake.ps1") .\psakefile.ps1 CreateNugetPackage
-}
 function Add-PackageSource([string] $Command){
     $Username = $env:NUGET_USERNAME
     $Password = $env:NUGET_PASSWORD
@@ -124,7 +121,6 @@ function Invoke-PesterSession{
     Get-Module -Name Pester -ListAvailable
 }
 
-# Clean-Folders -PathsArray @("..\Dependencies")
 Install-ChocolateyCli
 Install-Pester
 Invoke-PesterSession
