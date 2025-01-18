@@ -1,0 +1,1 @@
+Invoke-Pester -Path C:\Git\PowershellPlayground\Tests\Tests.ps1

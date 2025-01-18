@@ -27,8 +27,7 @@ function Test-PathExistence ([string]$Path){
 function Install-AwsTools{
     if(Ensure-ModuleInstalled -ModuleName "AWS.Tools.Installer" -eq $false){
         Write-Host "Installing Aws Tools"
-        Install-Module -Name AWS.Tools.Installer -Force -Scope CurrentUser -AllowClobber 
-        # -Verbose
+        Install-Module -Name AWS.Tools.Installer -Force -Scope CurrentUser -AllowClobber -Verbose
         Import-Module AWS.Tools.Installer
     }else{
         Write-Host "Aws Tools is already Installed"
@@ -42,8 +41,7 @@ function Install-AwsTools{
 }
 function Install-AwsS3{
     Write-Host "Installing Aws S3"
-    Install-AWSToolsModule -Name AWS.Tools.S3 -Force -Scope CurrentUser 
-    # -Verbose
+    Install-AWSToolsModule -Name AWS.Tools.S3 -Force -Scope CurrentUser -Verbose
     Import-Module AWS.Tools.S3
 }
 function Remove-FoldersContent([string[]]$PathsArray){
@@ -114,22 +112,10 @@ function Set-PackageSource{
 function Install-7Zip{
     choco install 7zip -y
 }
-function Install-Pester{
-    nuget install pester -Source "nuget.org" -OutputDirectory ..\Dependencies
-}
-function Invoke-PesterSession{
-    $pesterPath = "..\Dependencies\Pester*\tools\Pester.psd1"
-    Import-Module $pesterPath
-    # Verify that Pester is loaded
-    Get-Module -Name Pester -ListAvailable
-}
 
 # Clean-Folders -PathsArray @("..\Dependencies")
 Install-ChocolateyCli
-Install-Pester
-Invoke-PesterSession
 Install-7Zip
 Install-PsakeFramework
 Install-AwsTools
-Set-PackageSource
 Import-PsakeModule
