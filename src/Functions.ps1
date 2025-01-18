@@ -125,7 +125,7 @@ function Invoke-DotnetTests([string]$TestDllPath,
         
         & dotnet test $TestDllPath --logger 'trx;LogFileName=TestResults.trx' --results-directory $ResultsDirectory
 
-        if ($LASTEXITCODE -ne 0) {
+        if ($LASTEXITCODE -eq 0) {
             Log-Error -Target $currentTarget -Message "Tests completed successfully. Results saved to $ResultsDirectory"
         } else {
             Log-Error -Target $currentTarget -Message "Tests failed. Check the results in $ResultsDirectory"
