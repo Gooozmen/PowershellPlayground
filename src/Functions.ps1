@@ -113,8 +113,7 @@ function Push-NuGetPackage([string]$PackagePath)
 
 #Xunit
 function Invoke-DotnetTests([string]$TestDllPath,
-                            [string]$ResultsDirectory,
-                            [string]$BaseCommand = "dotnet test")
+                            [string]$ResultsDirectory)
 {
     $currentTarget = "Invoke DotnetTests"
     $OutputDirectory =  Resolve-Path "..\Artifacts"
@@ -124,7 +123,7 @@ function Invoke-DotnetTests([string]$TestDllPath,
         Log-Info -Target $currentTarget -Message "Running xUnit tests for $TestDllPath..."
         Log-Info -Target $currentTarget -Message "Command: $command "
         
-        & $BaseCommand $TestDllPath --logger 'trx;LogFileName=TestResults.trx' --results-directory $ResultsDirectory
+        & dotnet test $TestDllPath --logger 'trx;LogFileName=TestResults.trx' --results-directory $ResultsDirectory
 
         if ($LASTEXITCODE -ne 0) {
             Log-Error -Target $currentTarget -Message "Tests completed successfully. Results saved to $ResultsDirectory"
