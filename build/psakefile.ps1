@@ -1,4 +1,4 @@
-Include "..\src\Tools.ps1"
+Include "..\src\Tasks.ps1"
 
 $currentDir = get-location
 $ErrorActionPreference = 'Stop'
