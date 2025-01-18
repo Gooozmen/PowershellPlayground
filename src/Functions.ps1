@@ -116,7 +116,6 @@ function Invoke-DotnetTests([string]$TestDllPath,
                             [string]$ResultsDirectory)
 {
     $currentTarget = "Invoke DotnetTests"
-    $OutputDirectory =  Resolve-Path "..\Artifacts"
     try {
         $command = "$BaseCommand $TestDllPath --logger 'trx;LogFileName=TestResults.trx' --results-directory $ResultsDirectory"
 
@@ -130,6 +129,7 @@ function Invoke-DotnetTests([string]$TestDllPath,
             Log-Error -Target $currentTarget -Message "Tests failed. Check the results in $ResultsDirectory"
             Exit 1
         }
+        Log-Success -Target $currentTarget -Message "Tests completed successfully. Results saved to $ResultsDirectory"
         
         
     } catch {
