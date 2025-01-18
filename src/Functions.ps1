@@ -1,5 +1,4 @@
-$loggers = Resolve-Path "..\src\Loggers.ps1"
-Write-Host "Loggers path $functions"
+$loggers = Resolve-Path "$PSScriptRoot\Loggers.ps1"
 . $loggers
 
 #solution

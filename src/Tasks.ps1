@@ -1,4 +1,4 @@
-$functions = Resolve-Path ".\Functions.ps1"
+$functions = Resolve-Path "$PSScriptRoot\Functions.ps1"
 . $functions
 
 task Build -depends NugetRestore{
