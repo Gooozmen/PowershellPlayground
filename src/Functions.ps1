@@ -124,7 +124,7 @@ function Invoke-DotnetTests([string]$TestDllPath,
         Log-Info -Target $currentTarget -Message "Running xUnit tests for $TestDllPath..."
         Log-Info -Target $currentTarget -Message "Command: $command "
         
-        & $command
+        & $BaseCommand $TestDllPath --logger 'trx;LogFileName=TestResults.trx' --results-directory $ResultsDirectory
 
         if ($LASTEXITCODE -ne 0) {
             Log-Error -Target $currentTarget -Message "Tests completed successfully. Results saved to $ResultsDirectory"
