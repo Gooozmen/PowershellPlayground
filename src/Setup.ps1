@@ -48,14 +48,7 @@ function Remove-FoldersContent([string[]]$PathsArray){
     foreach ($_ in $PathsArray) {
         $AbsolutePath = Resolve-Path "$_"
         if(Test-Path $AbsolutePath){
-            $ItemsQuantity = (Get-ChildItem -Path $ItemsQuantity -Directory).Count
-            if($ItemsQuantity -gt 0){
-                Write-Host "Removing items in $AbsolutePath"
-                Remove-Item -Recurse "$_\**"
-            }
-            else{
-                Write-Host "No existing directories in $AbsolutePath"
-            }
+            Get-ChildItem -Path $AbsolutePath -Directory -Force | Remove-Item -Recurse -Force
         }
         else{
             Write-Host "$_ doesnt exist"
@@ -110,7 +103,7 @@ function Install-7Zip{
     choco install 7zip -y
 }
 
-# Clean-Folders -PathsArray @("..\Dependencies")
+Remove-FoldersContent -PathsArray @("..\Dependencies")
 Install-ChocolateyCli
 Install-7Zip
 Install-PsakeFramework
