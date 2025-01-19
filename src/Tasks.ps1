@@ -29,3 +29,7 @@ task Publish-Solution{
 task Execute-DotnetTests -depends Build{
     Invoke-DotnetTests -TestDllPath $TestDllPath -ResultsDirectory $TestsLogOutput
 }
+
+task Execute-TestsNoBuild{
+    Invoke-DotnetTests -TestDllPath $TestDllPath -ResultsDirectory $TestsLogOutput
+}
