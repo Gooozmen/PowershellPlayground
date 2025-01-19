@@ -103,7 +103,7 @@ function Install-7Zip{
     choco install 7zip -y
 }
 
-Remove-FoldersContent -PathsArray @("..\Dependencies")
+# Remove-FoldersContent -PathsArray @("..\Dependencies")
 Install-ChocolateyCli
 Install-7Zip
 Install-PsakeFramework
