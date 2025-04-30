@@ -34,5 +34,7 @@ function Get-TestResults
     if(Resolve-Path ("..\Artifacts\TestResults.trx")){
         Log-Success -Target $currentTarget -Message "Test result is present at Artifacts folder"
     }
-    Log-Error -Target $currentTarget -Message "File is not present at Destination Folder"
+    else {
+        Log-Error -Target $currentTarget -Message "Test result is not present at Artifacts folder"
+    }
 }
