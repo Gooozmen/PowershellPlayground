@@ -34,7 +34,9 @@ function Start-Container([string] $EnvFile,[string] $Identifier,[int]$Port)
 function Push-ContainerImage([string] $Username,[string] $Identifier,[string] $ImageVersion)
 {
     $currentTarget = "push container"
-    docker push ghcr.io/$Username/"{$Identifier}:{$ImageVersion}"
+    $usernameNormalized = $Username.ToLower()
+    $cmd = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $Identifier, $ImageVersion)
+    docker push $cmd
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
         exit 1
@@ -48,7 +50,8 @@ function Tag-ContatinerImage([string] $Username,[string] $Identifier,[string] $I
 {
     $currentTarget = "tag container"
     $usernameNormalized = $Username.ToLower()
-    docker tag poc ghcr.io/$usernameNormalized/"{$Identifier}:{$ImageVersion}"
+    $cmd = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $Identifier, $ImageVersion)
+    docker tag $Identifier $cmd
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
         exit 1
