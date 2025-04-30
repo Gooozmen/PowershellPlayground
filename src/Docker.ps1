@@ -1,10 +1,10 @@
 $loggers = Resolve-Path "$PSScriptRoot\Loggers.ps1"
 . $loggers
 
-function Build-Container([string] $Identifier)
+function Build-Container([string] $Identifier,[string] $DockerFilePath)
 {
     $currentTarget = "build container"
-    docker build -t $Identifier .
+    docker build -t $Identifier -f $DockerFilePath .
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
         exit 1

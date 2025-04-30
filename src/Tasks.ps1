@@ -54,6 +54,7 @@ task Start-DockerContainer{s
 }
 
 task Push-DockerImage -depends Build-DockerContainer{
+    
     Docker-Login($Username, $Token)
     Tag-ContatinerImage($Username,$Identifier,$ImageVersion)
     Push-ContainerImage($Username,$Identifier,$ImageVersion)
