@@ -1,6 +1,9 @@
 BeforeAll { 
-    $functions = (Resolve-Path "..\src\Functions.ps1")
-    . $functions
+    $solution = (Resolve-Path "..\src\solution.ps1")
+    $loggers = (Resolve-Path "..\src\Loggers.ps1")
+
+    . $solution
+    . $loggers
 }
 
 Describe "Clean-Solution" {

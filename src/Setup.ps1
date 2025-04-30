@@ -77,9 +77,6 @@ function Test-PsakeImport {
 function Add-PackageSource([string] $Command){
     $Username = $env:NUGET_USERNAME
     $Password = $env:NUGET_PASSWORD
-    Write-Output "Username $Username"
-    Write-Output "PASS $Password"
-
 
     if (-not $Username -or -not $Password) {
         Write-Error "Environment variables NUGET_USERNAME or NUGET_PASSWORD are not set."
@@ -103,7 +100,6 @@ function Install-7Zip{
     choco install 7zip -y
 }
 
-# Remove-FoldersContent -PathsArray @("..\Dependencies")
 Install-ChocolateyCli
 Install-7Zip
 Install-PsakeFramework

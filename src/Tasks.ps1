@@ -1,5 +1,16 @@
-$functions = Resolve-Path "$PSScriptRoot\Functions.ps1"
-. $functions
+$solution = Resolve-Path "$PSScriptRoot\Solution.ps1"
+$aws = Resolve-Path "$PSScriptRoot\Aws.ps1"
+$testing = Resolve-Path "$PSScriptRoot\Testing.ps1"
+$zip = Resolve-Path "$PSScriptRoot\Zip.ps1"
+$nuget = Resolve-Path "$PSScriptRoot\Nuget.ps1"
+$docker = Resolve-Path "$PSScriptRoot\Docker.ps1"
+
+. $aws
+. $solution
+. $testing
+. $zip
+. $nuget
+. $docker
 
 task Build -depends NugetRestore{
     Build-solution -SolutionPath $SolutionPath -Configuration $configuration
@@ -32,4 +43,18 @@ task Execute-DotnetTests -depends Build{
 
 task Execute-TestsNoBuild{
     Invoke-DotnetTests -TestDllPath $TestDllPath -ResultsDirectory $TestsLogOutput
+}
+
+task Build-DockerContainer {
+    Build-Container($Identifier)
+}
+
+task Start-DockerContainer{s
+    Start-Container($EnvFile,$Identifier,$Port)
+}
+
+task Push-DockerImage -depends Build-DockerContainer{
+    Docker-Login($Username, $Token)
+    Tag-ContatinerImage($Username,$Identifier,$ImageVersion)
+    Push-ContainerImage($Username,$Identifier,$ImageVersion)
 }
