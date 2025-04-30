@@ -3,14 +3,18 @@ $loggers = Resolve-Path "$PSScriptRoot\Loggers.ps1"
 
 function Build-Container([string] $Identifier,[string] $DockerFilePath)
 {
+    $currentLocation = Get-Location
     $currentTarget = "build container"
-    docker build -t $Identifier -f $DockerFilePath .
+    Set-CustomLocation($DockerFilePath)
+
+    docker build -t $Identifier .
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
         exit 1
     }
     else{
         Log-Success -Target $currentTarget
+        Set-CustomLocation($currentLocation)
     }
 }
 
@@ -66,4 +70,10 @@ function Docker-Login([string] $Username,[string] $Token)
     else{
         Log-Success -Target $currentTarget
     }
+}
+
+#TODO: Move generic function to a functions file
+function Set-CustomLocation([string] $Path)
+{
+    Set-Location $Path
 }
