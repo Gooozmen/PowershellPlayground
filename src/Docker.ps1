@@ -5,8 +5,8 @@ function Build-Container([string] $Identifier,[string] $DockerFilePath)
 {
     $currentLocation = Get-Location
     $currentTarget = "build container"
-    Set-CustomLocation($DockerFilePath)
 
+    Set-CustomLocation($DockerFilePath)
     docker build -t $Identifier .
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
@@ -75,5 +75,6 @@ function Docker-Login([string] $Username,[string] $Token)
 #TODO: Move generic function to a functions file
 function Set-CustomLocation([string] $Path)
 {
+    Log-Info("Set Custom Location","Applying Working Directory To: $Path")
     Set-Location $Path
 }
