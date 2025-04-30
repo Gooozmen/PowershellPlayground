@@ -46,15 +46,14 @@ task Execute-TestsNoBuild{
 }
 
 task Build-DockerContainer {
-    Build-Container($Identifier)
+    Build-Container($Identifier,$DockerFilePath)
 }
 
-task Start-DockerContainer{s
+task Start-DockerContainer{
     Start-Container($EnvFile,$Identifier,$Port)
 }
 
 task Push-DockerImage -depends Build-DockerContainer{
-    
     Docker-Login($Username, $Token)
     Tag-ContatinerImage($Username,$Identifier,$ImageVersion)
     Push-ContainerImage($Username,$Identifier,$ImageVersion)

@@ -62,7 +62,7 @@ function Docker-Login([string] $Username,[string] $Token)
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
         exit 1
-    }
+    } 
     else{
         Log-Success -Target $currentTarget
     }
