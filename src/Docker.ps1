@@ -1,13 +1,16 @@
 $loggers = Resolve-Path "$PSScriptRoot\Loggers.ps1"
 . $loggers
 
-function Build-Container([string] $Identifier,[string] $DockerFilePath)
+function Run-DockerCompose
+    (
+        [string] $EnvFile,
+        [string] $DockerComposePath
+    )
 {
     $currentLocation = Get-Location
-    $currentTarget = "build container"
-
-    Set-CustomLocation($DockerFilePath)
-    docker build -t $Identifier .
+    $currentTarget = "docker compose up"
+    Set-CustomLocation($DockerComposePath)
+    docker-compose --env-file $EnvFile up -d
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
         exit 1
@@ -18,24 +21,35 @@ function Build-Container([string] $Identifier,[string] $DockerFilePath)
     }
 }
 
-function Start-Container([string] $EnvFile,[string] $Identifier,[int]$Port)
+function Build-ContainerImage
+    (
+        [string] $ContainerServiceName,
+        [string] $ImageVersion,
+        [string] $DockerFilePath,
+        [string] $Username
+    )
 {
-    $currentTarget = "start container"
-    docker run -p "${Port}:${Port}" --env-file $EnvFile $Identifier
+    $currentLocation = Get-Location
+    $currentTarget = "build container image"
+    Set-CustomLocation($DockerFilePath)
+    $usernameNormalized = $Username.ToLower()
+    $cmd = [string]::Format("ghcr.io/{0}/{1}:v{2}", $usernameNormalized, $ContainerServiceName , $ImageVersion)
+    docker build -t $cmd .
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
         exit 1
     }
     else{
         Log-Success -Target $currentTarget
+        Set-CustomLocation($currentLocation)
     }
 }
 
-function Push-ContainerImage([string] $Username,[string] $Identifier,[string] $ImageVersion)
+function Push-ContainerImage([string] $Username,[string] $ContainerServiceName ,[string] $ImageVersion)
 {
     $currentTarget = "push container"
     $usernameNormalized = $Username.ToLower()
-    $cmd = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $Identifier, $ImageVersion)
+    $cmd = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , $ImageVersion)
     docker push $cmd
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
@@ -45,22 +59,6 @@ function Push-ContainerImage([string] $Username,[string] $Identifier,[string] $I
         Log-Success -Target $currentTarget
     }
 }
-
-function Tag-ContatinerImage([string] $Username,[string] $Identifier,[string] $ImageVersion)
-{
-    $currentTarget = "tag container"
-    $usernameNormalized = $Username.ToLower()
-    $cmd = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $Identifier, $ImageVersion)
-    docker tag $Identifier $cmd
-    if ($LASTEXITCODE -ne 0) {
-        Log-Error -Target $currentTarget
-        exit 1
-    }
-    else{
-        Log-Success -Target $currentTarget
-    }
-}
-
 
 function Docker-Login([string] $Username,[string] $Token)
 {

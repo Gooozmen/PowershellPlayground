@@ -12,6 +12,8 @@ $docker = Resolve-Path "$PSScriptRoot\Docker.ps1"
 . $nuget
 . $docker
 
+
+# DOTNET .SLN TASKS (BUILD, TEST, CLEAN)
 task Build -depends NugetRestore{
     Build-solution -SolutionPath $SolutionPath -Configuration $configuration
 }
@@ -24,6 +26,15 @@ task NugetRestore{
     Restore-solution -SolutionPath $SolutionPath
 }
 
+task Execute-DotnetTests -depends Build{
+    Invoke-DotnetTests -TestDllPath $TestDllPath -ResultsDirectory $TestsLogOutput
+}
+
+task Execute-TestsNoBuild{
+    Invoke-DotnetTests -TestDllPath $TestDllPath -ResultsDirectory $TestsLogOutput
+}
+
+# AWS TASKS (UPLOAD, DELETE)
 task S3-PostFile -depends S3-DeleteFile{
     S3-FileUpload -BucketName $BucketName  -FilePath $ProjectArtifact -S3Key $S3Key -Region $Region -AccessKey $AccessKey -SecretKey $SecretKey
 }
@@ -37,24 +48,16 @@ task Publish-Solution{
     Zip-Folder -SourceFolder $SourceFolder -OutputFolder $DestinationFolder
 }
 
-task Execute-DotnetTests -depends Build{
-    Invoke-DotnetTests -TestDllPath $TestDllPath -ResultsDirectory $TestsLogOutput
-}
-
-task Execute-TestsNoBuild{
-    Invoke-DotnetTests -TestDllPath $TestDllPath -ResultsDirectory $TestsLogOutput
-}
-
+# TASKS FOR DOCKER (BUILD, PUSH, COMPOSE)
 task Build-DockerContainer {
-    Build-Container -Identifier $Identifier -DockerFilePath $DockerFilePath
-}
-
-task Start-DockerContainer{
-    Start-Container -EnvFile $EnvFile -Identifier $Identifier -Port $Port
+    Build-ContainerImage -ContainerServiceName $ContainerServiceName -DockerFilePath $DockerFilePath -ImageVersion $ImageVersion -Username $Username 
 }
 
 task Push-DockerImage -depends Build-DockerContainer{
     Docker-Login -Username $Username -Token $Token
-    Tag-ContatinerImage -Username $Username -Identifier $Identifier -ImageVersion $ImageVersion
-    Push-ContainerImage -Username $Username -Identifier $Identifier -ImageVersion $ImageVersion
+    Push-ContainerImage -Username $Username -ContainerServiceName $ContainerServiceName -ImageVersion $ImageVersion
+}
+
+task Start-DockerContainer -depends Build-DockerContainer{
+    Start-Container -EnvFile $EnvFile -DockerComposePath $DockerComposePath
 }
