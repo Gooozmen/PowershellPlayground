@@ -2,15 +2,17 @@ $loggers = Resolve-Path "$PSScriptRoot\Loggers.ps1"
 . $loggers
 
 function Run-DockerCompose
-    (
-        [string] $EnvFile,
-        [string] $DockerComposePath
-    )
+(
+    [string] $EnvFile,
+    [string] $DockerComposePath
+)
 {
     $currentLocation = Get-Location
     $currentTarget = "docker compose up"
     Set-CustomLocation($DockerComposePath)
-    docker-compose --env-file $EnvFile up -d
+    Pull-Image
+    docker-compose --env-file $EnvFile up -d --remove-orphans --force-recreate
+
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
         exit 1
@@ -22,12 +24,12 @@ function Run-DockerCompose
 }
 
 function Build-ContainerImage
-    (
-        [string] $ContainerServiceName,
-        [string] $ImageVersion,
-        [string] $DockerFilePath,
-        [string] $Username
-    )
+(
+    [string] $ContainerServiceName,
+    [string] $ImageVersion,
+    [string] $DockerFilePath,
+    [string] $Username
+)
 {
     $currentLocation = Get-Location
     $currentTarget = "build container image"
@@ -47,10 +49,17 @@ function Build-ContainerImage
 
 function Push-ContainerImage([string] $Username,[string] $ContainerServiceName ,[string] $ImageVersion)
 {
-    $currentTarget = "push container"
     $usernameNormalized = $Username.ToLower()
-    $cmd = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , $ImageVersion)
-    docker push $cmd
+    $versionedImageCmd = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , $ImageVersion)
+    $latestImageCmd = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , "latest")
+    Publish-Image($versionedImageCmd)
+    Publish-Image($latestImageCmd)
+}
+
+function Publish-Image([string] $Command)
+{
+    $currentTarget = "publish container image"
+    docker push $Command
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
         exit 1
@@ -59,6 +68,21 @@ function Push-ContainerImage([string] $Username,[string] $ContainerServiceName ,
         Log-Success -Target $currentTarget
     }
 }
+
+function Get-ContainerImage
+{
+    $currentTarget = "pull container image"
+    docker-compose pull
+    if ($LASTEXITCODE -ne 0) {
+        Log-Error -Target $currentTarget
+        exit 1
+    }
+    else{
+        Log-Success -Target $currentTarget
+    }
+}
+
+
 
 function Docker-Login([string] $Username,[string] $Token)
 {
