@@ -15,6 +15,7 @@ function Run-DockerCompose
 
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
+        Set-CustomLocation($currentLocation)
         exit 1
     }
     else{
