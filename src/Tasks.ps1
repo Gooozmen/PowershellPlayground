@@ -59,5 +59,5 @@ task Push-DockerImage -depends Build-DockerContainer{
 }
 
 task Start-DockerContainer -depends Build-DockerContainer{
-    Start-Container -EnvFile $EnvFile -DockerComposePath $DockerComposePath
+    Run-DockerCompose -EnvFile $EnvFile -DockerComposePath $DockerComposePath
 }

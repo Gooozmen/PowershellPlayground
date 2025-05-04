@@ -10,7 +10,6 @@ function Run-DockerCompose
     $currentLocation = Get-Location
     $currentTarget = "docker compose up"
     Set-CustomLocation($DockerComposePath)
-    Pull-Image
     docker-compose --env-file $EnvFile up -d --remove-orphans --force-recreate
 
     if ($LASTEXITCODE -ne 0) {
