@@ -35,7 +35,7 @@ function Build-ContainerImage
     $currentTarget = "build container image"
     Set-CustomLocation($DockerFilePath)
     $usernameNormalized = $Username.ToLower()
-    $cmd = [string]::Format("ghcr.io/{0}/{1}:v{2}", $usernameNormalized, $ContainerServiceName , $ImageVersion)
+    $cmd = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , $ImageVersion)
     docker build -t $cmd .
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
