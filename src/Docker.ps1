@@ -51,9 +51,7 @@ function Push-ContainerImage([string] $Username,[string] $ContainerServiceName ,
 {
     $usernameNormalized = $Username.ToLower()
     $versionedImageCmd = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , $ImageVersion)
-    $latestImageCmd = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , "latest")
     Publish-Image($versionedImageCmd)
-    Publish-Image($latestImageCmd)
 }
 
 function Publish-Image([string] $Command)
