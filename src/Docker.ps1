@@ -35,11 +35,12 @@ function Build-ContainerImage
     $currentTarget = "build container image"
     Set-CustomLocation($DockerFilePath)
     $usernameNormalized = $Username.ToLower()
+    write-host "Username------------- $usernameNormalized"
 
-    #latest tag
     $latest = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , "latest")
-    #versioned tag
+    Log-Info -Target $currentTarget -Message "Building image with tag: $latest"
     $versioned = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , $ImageVersion)
+    Log-Info -Target $currentTarget -Message "Building image with tag: $versioned"
     docker build -t $latest .
     Tag-ContainerImage -latestImageTag $latest -versionedImageTag $versioned
 
@@ -118,3 +119,4 @@ function Set-CustomLocation([string] $Path)
     Log-Info("Set Custom Location","Applying Working Directory To: $Path")
     Set-Location $Path
 }
+
