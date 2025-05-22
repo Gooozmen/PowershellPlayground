@@ -38,11 +38,17 @@ function Build-ContainerImage
     write-host "Username------------- $usernameNormalized"
 
     $latest = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , "latest")
-    Log-Info -Target $currentTarget -Message "Building image with tag: $latest"
     $versioned = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , $ImageVersion)
+
+    Log-Info -Target $currentTarget -Message "Building image with tag: $latest"
     Log-Info -Target $currentTarget -Message "Building image with tag: $versioned"
+
     docker build -t $latest .
+
     Tag-ContainerImage -latestImageTag $latest -versionedImageTag $versioned
+
+    #list all images that were generated
+    docker images --format "{{.Repository}}:{{.Tag}}" | Where-Object { $_ -like "*$ContainerServiceName*" }
 
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget

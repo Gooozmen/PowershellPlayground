@@ -58,6 +58,6 @@ task Push-DockerImage -depends Build-DockerContainer{
     Push-ContainerImage -Username $Username -ContainerServiceName $ContainerServiceName -ImageVersion $ImageVersion
 }
 
-task Start-DockerContainer -depends Build-DockerContainer{
+task Start-DockerContainer{
     Run-DockerCompose -EnvFile $EnvFile -DockerComposePath $DockerComposePath
 }
