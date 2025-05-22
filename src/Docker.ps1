@@ -35,8 +35,14 @@ function Build-ContainerImage
     $currentTarget = "build container image"
     Set-CustomLocation($DockerFilePath)
     $usernameNormalized = $Username.ToLower()
-    $cmd = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , $ImageVersion)
-    docker build -t $cmd .
+
+    #latest tag
+    $latest = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , "latest")
+    #versioned tag
+    $versioned = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , $ImageVersion)
+    docker build -t $latest .
+    Tag-ContainerImage -latestImageTag $latest -versionedImageTag $versioned
+
     if ($LASTEXITCODE -ne 0) {
         Log-Error -Target $currentTarget
         exit 1
@@ -47,9 +53,20 @@ function Build-ContainerImage
     }
 }
 
+function Tag-ContainerImage
+(
+    [string] $latestImageTag ,
+    [string] $versionedImageTag
+)
+{
+    docker tag $latestImageTag $versionedImageTag
+}
+
 function Push-ContainerImage([string] $Username,[string] $ContainerServiceName ,[string] $ImageVersion)
 {
     $usernameNormalized = $Username.ToLower()
+    $latestImageCmd = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , "latest")
+    Publish-Image($latestImageCmd)
     $versionedImageCmd = [string]::Format("ghcr.io/{0}/{1}:{2}", $usernameNormalized, $ContainerServiceName , $ImageVersion)
     Publish-Image($versionedImageCmd)
 }
